@@ -30,3 +30,28 @@ export const blogDetail = async (req, res) => {
     res.status(404).send({ message: "Post not found" });
   }
 };
+
+export const deleteBlog = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Blog.findByIdAndDelete(id);
+    res.status(204).send({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.log("Post not found");
+    res.status(404).send({ message: "Post not found" });
+  }
+};
+
+export const editBlog = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const newBlog = await Blog.findByIdAndUpdate(id, req.body, {
+      runValidators: true,
+      new: true,
+    });
+    res.status(200).json(newBlog);
+    console.log(body);
+  } catch (error) {
+    console.log("Post not found", error);
+  }
+};
