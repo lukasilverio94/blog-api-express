@@ -10,13 +10,14 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const createBlogPost = async (req, res) => {
+  console.log("THIS IS REQUEST OBJECT", req);
   try {
     const newBlog = await Blog(req.body);
     const savedBlog = await newBlog.save();
     res.status(200).json(savedBlog);
   } catch (error) {
     console.log("error creating blog", error);
-    res.status(500).send({ message: "Failed to create blog" });
+    res.status(500).send({ message: "All fields are required" });
   }
 };
 
@@ -31,7 +32,7 @@ export const blogDetail = async (req, res) => {
   }
 };
 
-export const deleteBlog = async (req, res) => {
+export const deleteBlogPost = async (req, res) => {
   const { id } = req.params;
   try {
     await Blog.findByIdAndDelete(id);
@@ -42,7 +43,7 @@ export const deleteBlog = async (req, res) => {
   }
 };
 
-export const editBlog = async (req, res) => {
+export const editBlogPost = async (req, res) => {
   const { id } = req.params;
   try {
     const newBlog = await Blog.findByIdAndUpdate(id, req.body, {
