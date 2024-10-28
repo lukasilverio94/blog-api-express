@@ -10,7 +10,6 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const createBlogPost = async (req, res) => {
-  console.log("THIS IS REQUEST OBJECT", req);
   try {
     const newBlog = await Blog(req.body);
     const savedBlog = await newBlog.save();
