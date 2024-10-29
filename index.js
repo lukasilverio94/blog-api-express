@@ -3,6 +3,7 @@ import connectDb from "./config/db.js";
 import dotenv from "dotenv";
 dotenv.config();
 import postRoutes from "./src/api/posts/post.routes.js";
+import authRoutes from "./src/api/auth/auth.routes.js";
 
 import { registerUser } from "./src/api/auth/auth.controller.js";
 
@@ -19,8 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 app.use("/blogs", postRoutes);
-// USERS
-app.post("/user/register", registerUser);
+app.use("/users", authRoutes);
 
 // start server
 app.listen(PORT, () => {

@@ -1,7 +1,8 @@
 import User from "../users/user.model.js";
 import AppError from "../utils/AppError.js";
+import bcrypt from "bcrypt";
 import { randomUUID } from "node:crypto";
-import { hashPassword, checkPassword } from "../utils/auth.services.js";
+import { hashPassword } from "../utils/auth.services.js";
 import { addRefreshTokenToWhiteList } from "./auth.services.js";
 import { generateTokens } from "../utils/jwt.js";
 
@@ -37,4 +38,46 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-export { registerUser };
+const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      throw new AppError("Email and password are required.", 400);
+    }
+
+    const existingUser = await User.findOne({ email: email }).select(
+      "+password"
+    );
+    if (!existingUser) {
+      throw new AppError("Invalid credentials", 401);
+    }
+    console.log(existingUser);
+    const isValidPassword = await bcrypt.compare(
+      String(password),
+      String(existingUser.password)
+    );
+
+    if (!isValidPassword) {
+      throw new AppError("Invalid login credentials", 403);
+    }
+
+    const jti = randomUUID();
+    const { accessToken, refreshToken } = generateTokens(existingUser, jti);
+
+    await addRefreshTokenToWhiteList({
+      jti,
+      refreshToken,
+      userId: existingUser.id,
+    });
+
+    res.json({
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { registerUser, loginUser };

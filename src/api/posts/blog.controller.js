@@ -50,7 +50,6 @@ export const editBlogPost = async (req, res) => {
       new: true,
     });
     res.status(200).json(newBlog);
-    console.log(body);
   } catch (error) {
     console.log("Post not found", error);
   }
