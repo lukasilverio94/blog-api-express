@@ -6,7 +6,7 @@ import {
   deleteBlogPost,
   editBlogPost,
   getAllPosts,
-} from "../controllers/blogController.js";
+} from "./blog.controller.js";
 
 router.get("/", getAllPosts);
 router.post("/", createBlogPost);

@@ -1,12 +1,10 @@
 import express from "express";
 import connectDb from "./config/db.js";
 import dotenv from "dotenv";
-import postRoutes from "./routes/postRoutes.js";
-
-import { registerUser } from "./controllers/userController.js";
-
-// Load env variables
 dotenv.config();
+import postRoutes from "./src/api/posts/post.routes.js";
+
+import { registerUser } from "./src/api/auth/auth.controller.js";
 
 // connect db
 connectDb();
