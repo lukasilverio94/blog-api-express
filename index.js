@@ -5,6 +5,8 @@ dotenv.config();
 import postRoutes from "./src/api/posts/post.routes.js";
 import authRoutes from "./src/api/auth/auth.routes.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 // connect db
 connectDb();
 
@@ -21,6 +23,7 @@ const corsOptions = {
 
 // middlewares
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

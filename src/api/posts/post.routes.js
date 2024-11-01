@@ -7,9 +7,10 @@ import {
   editBlogPost,
   getAllPosts,
 } from "./blog.controller.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 router.get("/", getAllPosts);
-router.post("/", createBlogPost);
+router.post("/", authMiddleware, createBlogPost);
 router.get("/:id", blogDetail);
 router.put("/:id", editBlogPost);
 router.delete("/:id", deleteBlogPost);

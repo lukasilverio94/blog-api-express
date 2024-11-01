@@ -10,13 +10,19 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const createBlogPost = async (req, res) => {
+  console.log("REQ ON CREATE BLOG", req);
   try {
-    const newBlog = await Blog(req.body);
-    const savedBlog = await newBlog.save();
-    res.status(200).json(savedBlog);
+    const blog = new Blog({
+      title: req.body.title,
+      content: req.body.content,
+      user: req.user.id,
+    });
+
+    const savedBlog = await blog.save();
+    res.status(201).json(savedBlog);
   } catch (error) {
-    console.log("error creating blog", error);
-    res.status(500).send({ message: "All fields are required" });
+    console.error("error creating blog", error);
+    res.status(400).json({ message: error.message });
   }
 };
 
