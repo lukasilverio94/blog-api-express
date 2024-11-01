@@ -4,9 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import postRoutes from "./src/api/posts/post.routes.js";
 import authRoutes from "./src/api/auth/auth.routes.js";
-
-import { registerUser } from "./src/api/auth/auth.controller.js";
-
+import cors from "cors";
 // connect db
 connectDb();
 
@@ -14,7 +12,14 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 
+// CORS option config
+const corsOptions = {
+  origin: "http://localhost:5173",
+  optionsSuccessStatus: 200,
+};
+
 // middlewares
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

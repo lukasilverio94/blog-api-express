@@ -2,7 +2,7 @@ import Blog from "../posts/post.model.js";
 
 export const getAllPosts = async (req, res) => {
   try {
-    const blogs = await Blog.find({});
+    const blogs = await Blog.find({}).populate("user");
     res.send(blogs);
   } catch (err) {
     console.log(err);
@@ -23,7 +23,7 @@ export const createBlogPost = async (req, res) => {
 export const blogDetail = async (req, res) => {
   const { id } = req.params;
   try {
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id).populate("user");
     res.status(200).send(blog);
   } catch (err) {
     console.log("Blog not found!");
