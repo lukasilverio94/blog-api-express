@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import { hashPassword } from "../utils/auth.services.js";
 import { addRefreshTokenToWhiteList } from "./auth.services.js";
 import { generateTokens } from "../utils/jwt.js";
+import { setAuthCookies, clearAuthCookies } from "../utils/setAuthCookies.js";
 
 const registerUser = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -31,7 +32,8 @@ const registerUser = async (req, res, next) => {
     const { accessToken, refreshToken } = generateTokens(user, jti);
     await addRefreshTokenToWhiteList({ jti, refreshToken, userId: user.id });
 
-    res.status(200).json({ accessToken, refreshToken });
+    setAuthCookies(res, accessToken, refreshToken);
+    res.status(200).json({ message: "User registered successfully" });
   } catch (error) {
     console.log("error", error);
     next(error);
@@ -52,7 +54,7 @@ const loginUser = async (req, res, next) => {
     if (!existingUser) {
       throw new AppError("Invalid credentials", 401);
     }
-    console.log(existingUser);
+
     const isValidPassword = await bcrypt.compare(
       String(password),
       String(existingUser.password)
@@ -71,13 +73,21 @@ const loginUser = async (req, res, next) => {
       userId: existingUser.id,
     });
 
-    res.json({
-      accessToken,
-      refreshToken,
-    });
+    setAuthCookies(res, accessToken, refreshToken);
+
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     next(error);
   }
 };
 
-export { registerUser, loginUser };
+const logoutUser = async (req, res, next) => {
+  try {
+    clearAuthCookies(res);
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { registerUser, loginUser, logoutUser };
