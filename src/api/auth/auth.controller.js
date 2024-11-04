@@ -75,7 +75,7 @@ const loginUser = async (req, res, next) => {
 
     setAuthCookies(res, accessToken, refreshToken);
 
-    res.status(200).json({ message: "Login successful" });
+    res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
     next(error);
   }

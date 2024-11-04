@@ -6,7 +6,7 @@ import {
   deleteBlogPost,
   editBlogPost,
   getAllPosts,
-} from "./blog.controller.js";
+} from "./blogPost.controller.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 router.get("/", getAllPosts);

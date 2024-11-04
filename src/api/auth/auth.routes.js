@@ -16,6 +16,6 @@ router.get("/me", authMiddleware, (req, res) => {
     email: req.user.email,
   });
 });
-router.post("/logout", logoutUser);
+router.post("/logout", authMiddleware, logoutUser);
 
 export default router;

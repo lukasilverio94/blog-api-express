@@ -1,4 +1,4 @@
-import Blog from "../posts/post.model.js";
+import Blog from "./post.model.js";
 
 export const getAllPosts = async (req, res) => {
   try {
@@ -10,12 +10,15 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const createBlogPost = async (req, res) => {
-  console.log("REQ ON CREATE BLOG", req);
+  if (!req.user || !req.user.userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
   try {
     const blog = new Blog({
       title: req.body.title,
       content: req.body.content,
-      user: req.user.id,
+      user: req.user.userId,
     });
 
     const savedBlog = await blog.save();
