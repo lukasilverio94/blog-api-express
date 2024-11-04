@@ -1,8 +1,8 @@
-import Blog from "../models/Post.js";
+import Blog from "../posts/post.model.js";
 
 export const getAllPosts = async (req, res) => {
   try {
-    const blogs = await Blog.find({});
+    const blogs = await Blog.find({}).populate("user");
     res.send(blogs);
   } catch (err) {
     console.log(err);
@@ -10,21 +10,26 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const createBlogPost = async (req, res) => {
-  console.log("THIS IS REQUEST OBJECT", req);
+  console.log("REQ ON CREATE BLOG", req);
   try {
-    const newBlog = await Blog(req.body);
-    const savedBlog = await newBlog.save();
-    res.status(200).json(savedBlog);
+    const blog = new Blog({
+      title: req.body.title,
+      content: req.body.content,
+      user: req.user.id,
+    });
+
+    const savedBlog = await blog.save();
+    res.status(201).json(savedBlog);
   } catch (error) {
-    console.log("error creating blog", error);
-    res.status(500).send({ message: "All fields are required" });
+    console.error("error creating blog", error);
+    res.status(400).json({ message: error.message });
   }
 };
 
 export const blogDetail = async (req, res) => {
   const { id } = req.params;
   try {
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id).populate("user");
     res.status(200).send(blog);
   } catch (err) {
     console.log("Blog not found!");
@@ -51,7 +56,6 @@ export const editBlogPost = async (req, res) => {
       new: true,
     });
     res.status(200).json(newBlog);
-    console.log(body);
   } catch (error) {
     console.log("Post not found", error);
   }
